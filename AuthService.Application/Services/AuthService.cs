@@ -13,12 +13,14 @@ namespace AuthService.Application.Services
         private readonly IUserRepository _userRepo;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
+        private readonly IRefreshTokenService _refreshTokenService;
 
-        public AuthService(IUserRepository userRepo, IPasswordHasher passwordHasher, ITokenService tokenService)
+        public AuthService(IUserRepository userRepo, IPasswordHasher passwordHasher, ITokenService tokenService, IRefreshTokenService refreshTokenService)
         {
             _userRepo = userRepo;
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
+            _refreshTokenService = refreshTokenService;
         }
 
         public TokenResponseDto Login(LoginRequestDto request, string ipAddress)
@@ -47,10 +49,12 @@ namespace AuthService.Application.Services
 
             var accessToken = _tokenService.GenerateAccessToken(user, roles);
 
+            var refreshToken = _refreshTokenService.Create(user.UserID, ipAddress);
+
             return new TokenResponseDto
             {
                 AccessToken = accessToken,
-                RefreshToken = "WILL_BE_IMPLEMENTED_TOMORROW",
+                RefreshToken = refreshToken.Token,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(30),
             };
         }
