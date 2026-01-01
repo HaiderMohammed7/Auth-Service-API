@@ -22,5 +22,13 @@ namespace AuthService.API.Controllers
             var result = _authService.Refresh(dto.RefreshToken, ip);
             return Ok(result);
         }
+
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginRequestDto dto)
+        {
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var result = _authService.Login(dto,ip);
+            return Ok(result);
+        }
     }
 }
