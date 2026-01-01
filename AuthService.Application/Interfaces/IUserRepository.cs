@@ -10,6 +10,7 @@ namespace AuthService.Application.Interfaces
     public interface IUserRepository
     {
         User? GetByEmail(string email);
+        User? GetById(int userId);
         void IncrementFailedAttempts(int userID);
         void ResetFailedAttempts(int userID);
         void LockUser(int userID);

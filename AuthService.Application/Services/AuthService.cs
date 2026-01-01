@@ -58,5 +58,29 @@ namespace AuthService.Application.Services
                 ExpiresAt = DateTime.UtcNow.AddMinutes(30),
             };
         }
+
+        public TokenResponseDto Refresh(string refreshToken, string ipAddress)
+        {
+            var existingToken = _refreshTokenService.Get(refreshToken);
+
+            if (existingToken == null || existingToken.RevokedAt != null || existingToken.ExpiresAt < DateTime.UtcNow)
+                throw new Exception("Invalid refresh token");
+
+            var user = _userRepo.GetById(existingToken.UserID) ?? throw new Exception("User not found");
+
+            var roles = _userRepo.GetUserRoles(user.UserID);
+
+            _refreshTokenService.Revoke(refreshToken, ipAddress);
+            var newRefreshToken = _refreshTokenService.Create(user.UserID, ipAddress);
+
+            var newAccessToken = _tokenService.GenerateAccessToken(user, roles);
+
+            return new TokenResponseDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken.Token,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(30),
+            };
+        }
     }
 }

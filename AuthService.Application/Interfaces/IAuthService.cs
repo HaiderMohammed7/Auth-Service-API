@@ -10,5 +10,6 @@ namespace AuthService.Application.Interfaces
     public interface IAuthService
     {
         TokenResponseDto Login(LoginRequestDto request, string ipAddress);
+        TokenResponseDto Refresh(string refreshToken, string ipAddress);
     }
 }
