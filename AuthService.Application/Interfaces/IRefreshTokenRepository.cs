@@ -12,5 +12,6 @@ namespace AuthService.Application.Interfaces
         void Add(RefreshToken token);
         void Update(RefreshToken token);
         RefreshToken? GetByToken(string token);
+        List<RefreshToken> GetActiveTokensByUser(int userId);
     }
 }

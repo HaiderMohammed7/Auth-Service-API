@@ -82,5 +82,14 @@ namespace AuthService.Application.Services
                 ExpiresAt = DateTime.UtcNow.AddMinutes(30),
             };
         }
+
+        public void Logout(string refreshToken, string ipAddress)
+        {
+            _refreshTokenService.Revoke(refreshToken, ipAddress);
+        }
+        public void LogoutAll(int userId, string ipAddress)
+        {
+            _refreshTokenService.RevokeAllForUser(userId, ipAddress);
+        }
     }
 }

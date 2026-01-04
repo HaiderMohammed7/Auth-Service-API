@@ -47,5 +47,17 @@ namespace AuthService.Application.Services
 
             _refreshTokenRepository.Update(refreshToken);
         }
+
+        public void RevokeAllForUser(int userId, string ipAddress)
+        {
+            var tokens = _refreshTokenRepository.GetActiveTokensByUser(userId);
+
+            foreach (var token in tokens)
+            {
+                token.RevokedAt = DateTime.UtcNow;
+                token.RevokedByIP = ipAddress;
+                _refreshTokenRepository.Update(token);
+            }
+        }
     }
 }

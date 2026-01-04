@@ -52,5 +52,26 @@ namespace AuthService.API.Controllers
                 Roles = roles
             });
         }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public IActionResult Logout([FromBody] RefreshTokenRequestDto dto)
+        {
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            _authService.Logout(dto.RefreshToken, ip);
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPost("logout-all")]
+        public IActionResult LogoutAll()
+        {
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub)!);
+
+            _authService.LogoutAll(userId, ip);
+            return NoContent();
+        }
     }
 }
