@@ -1,6 +1,10 @@
-﻿using AuthService.Application.Interfaces;
+﻿using System.Security.Claims;
+using AuthService.Application.Interfaces;
+using AuthService.Domain.Entities;
 using AuthService.Shared.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AuthService.API.Controllers
 {
@@ -29,6 +33,24 @@ namespace AuthService.API.Controllers
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             var result = _authService.Login(dto,ip);
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+            return Ok(new UserDto
+            {
+                UserID = int.Parse(userId!),
+                Email = email,
+                Roles = roles
+            });
         }
     }
 }
