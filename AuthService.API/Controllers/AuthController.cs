@@ -5,6 +5,7 @@ using AuthService.Shared.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using AuthService.Shared.Responses;
 
 namespace AuthService.API.Controllers
 {
@@ -32,7 +33,7 @@ namespace AuthService.API.Controllers
         {
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             var result = _authService.Login(dto,ip);
-            return Ok(result);
+            return Ok(ApiResponse<TokenResponseDto>.Ok(result));
         }
 
         [Authorize]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AuthService.Application.Exceptions;
 using AuthService.Application.Interfaces;
 using AuthService.Shared.DTOs;
 
@@ -28,7 +29,7 @@ namespace AuthService.Application.Services
             var user = _userRepo.GetByEmail(request.Email);
 
             if(user == null || !user.IsActive || user.IsLocked)
-                throw new Exception("Invalid credentials");
+                throw new AppException("Invalid credentials", 401);
 
             var isValidPassword = _passwordHasher.VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt);
 
@@ -39,7 +40,7 @@ namespace AuthService.Application.Services
                 if(user.FailedLoginAttempts + 1 >= 5)
                     _userRepo.LockUser(user.UserID);
 
-                throw new Exception("Invalid credentials");
+                throw new AppException("Invalid credentials", 401);
             }
 
             _userRepo.ResetFailedAttempts(user.UserID);
