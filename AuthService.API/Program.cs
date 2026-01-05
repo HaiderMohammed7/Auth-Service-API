@@ -2,8 +2,10 @@ using System.Text;
 using AuthService.API.Middleware;
 using AuthService.Application.Interfaces;
 using AuthService.Application.Services;
+using AuthService.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -61,6 +63,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
 
     });
+
+builder.Services.AddDbContext<AuthDbContext>(option =>
+    option.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddAuthorization();
 
