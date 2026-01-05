@@ -10,6 +10,8 @@ namespace AuthService.Domain.Entities
     {
         public int AuditLogID { get; set; }
         public int? UserID { get; set; }
+        public User? User { get; set; }
+
         public string Action { get; set; } = null!;
         public string? Description { get; set; }
         public string IPAddress { get; set; } = null!;

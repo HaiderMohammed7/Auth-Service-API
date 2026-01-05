@@ -28,14 +28,31 @@ namespace AuthService.Infrastructure.Data
                 .IsUnique();
 
             modelBuilder.Entity<UserRole>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(ur => ur.UserID);
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserRole>()
-                .HasOne<Role>()
-                .WithMany()
-                .HasForeignKey(ur => ur.RoleID);
+                .HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserRole>()
+                .HasIndex(ur => new { ur.UserID, ur.RoleID })
+                .IsUnique();
+
+
+            modelBuilder.Entity<RefreshToken>()
+                .HasIndex(rt => rt.Token)
+                .IsUnique();
+
+            modelBuilder.Entity<LoginAttempt>()
+                .HasIndex(la => la.Email);
+
+            modelBuilder.Entity<AuditLog>()
+                .HasIndex(a => a.UserID);
         }
     }
 }
