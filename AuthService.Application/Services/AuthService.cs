@@ -28,8 +28,11 @@ namespace AuthService.Application.Services
         {
             var user = _userRepo.GetByEmail(request.Email);
 
-            if(user == null || !user.IsActive || user.IsLocked)
+            if(user == null || !user.IsActive)
                 throw new AppException("Invalid credentials", 401);
+
+            if (user.IsLocked)
+                throw new AppException("Account is Locked. Try Later.", 423);
 
             var isValidPassword = _passwordHasher.VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt);
 

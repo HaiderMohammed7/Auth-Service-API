@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using AuthService.Shared.Responses;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AuthService.API.Controllers
 {
@@ -20,14 +21,16 @@ namespace AuthService.API.Controllers
             _authService = authService;
         }
 
+        [EnableRateLimiting("auth")]
         [HttpPost("refresh")]
         public IActionResult Refresh([FromBody] RefreshTokenRequestDto dto)
         {
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             var result = _authService.Refresh(dto.RefreshToken, ip);
-            return Ok(result);
+            return Ok(ApiResponse<TokenResponseDto>.Ok(result));
         }
 
+        [EnableRateLimiting("auth")]
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequestDto dto)
         {
