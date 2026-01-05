@@ -28,8 +28,11 @@ namespace AuthService.Application.Services
         {
             var user = _userRepo.GetByEmail(request.Email);
 
-            if(user == null || !user.IsActive)
+            if(user == null)
                 throw new AppException("Invalid credentials", 401);
+
+            if(!user.IsActive)
+                throw new AppException("Account disabled", 403);
 
             if (user.IsLocked)
                 throw new AppException("Account is Locked. Try Later.", 423);
@@ -49,7 +52,7 @@ namespace AuthService.Application.Services
             _userRepo.ResetFailedAttempts(user.UserID);
             _userRepo.UpdateLastLogin(user.UserID);
 
-            var roles = _userRepo.GetUserRoles(user.UserID);
+            var roles = _userRepo.GetUserRoles(user.UserID) ?? new List<string>();
 
             var accessToken = _tokenService.GenerateAccessToken(user, roles);
 

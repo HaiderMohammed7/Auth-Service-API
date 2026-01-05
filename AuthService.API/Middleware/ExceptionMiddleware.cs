@@ -30,6 +30,7 @@ namespace AuthService.API.Middleware
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 await WriteResponse(context, "Something went wrong");
             }
+
         }
 
         private static async Task WriteResponse(HttpContext context, string message)

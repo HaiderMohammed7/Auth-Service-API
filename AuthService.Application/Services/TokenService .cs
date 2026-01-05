@@ -33,7 +33,7 @@ namespace AuthService.Application.Services
             foreach (var role in roles)
                 claims.Add(new Claim(ClaimTypes.Role, role));
 
-            var Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            var Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]!));
 
             var creds = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
 
