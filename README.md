@@ -1,60 +1,136 @@
-# \# Auth Service API
+# \# 🔐 Auth Service API
 
 # 
 
-# Centralized Authentication \& Authorization API built with ASP.NET Core.
+# A secure and scalable \*\*Authentication \& Authorization API\*\* built with \*\*Clean Architecture\*\*, designed to serve as a core authentication system for modern applications.
 
 # 
 
-# \## Features
-
-# \- JWT Authentication
-
-# \- Refresh Token with Rotation
-
-# \- Secure Password Hashing (PBKDF2)
-
-# \- Role-based Authorization
-
-# \- Login / Logout / Refresh
-
-# \- Rate Limiting \& Brute-force Protection
-
-# \- Global Error Handling
-
-# \- Swagger Documentation
+# This project focuses on \*\*security, maintainability, and extensibility\*\*, following industry best practices in backend engineering.
 
 # 
 
-# \## Architecture
-
-# \- API Layer
-
-# \- Application (Business Logic)
-
-# \- Domain (Entities)
-
-# \- Infrastructure (Planned)
-
-# \- Shared (DTOs \& Responses)
+# ---
 
 # 
 
-# \## Authentication Flow
-
-# 1\. Login with email \& password
-
-# 2\. Receive Access Token + Refresh Token
-
-# 3\. Use Access Token for protected endpoints
-
-# 4\. Refresh Access Token using Refresh Token
-
-# 5\. Logout revokes refresh tokens
+# \## 🚀 Latest Release
 
 # 
 
-# \## Security
+# \*\*v1.1.0 – Infrastructure Layer Implementation\*\*
+
+# 
+
+# \- Entity Framework Core integration
+
+# \- Database persistence with migrations
+
+# \- Complete Clean Architecture setup
+
+# \- Production-ready authentication backend
+
+# 
+
+# 👉 See full release history here:  
+
+# https://github.com/HaiderMohammed7/Auth-Service-API/releases
+
+# 
+
+# ---
+
+# 
+
+# \## ✨ Features
+
+# 
+
+# \- JWT-based authentication
+
+# \- Refresh token rotation \& revocation
+
+# \- Secure password hashing using \*\*PBKDF2\*\*
+
+# \- Role-based authorization (RBAC)
+
+# \- Login / Logout / Token Refresh endpoints
+
+# \- Rate limiting \& brute-force protection
+
+# \- Account lockout on failed login attempts
+
+# \- Global error handling
+
+# \- Swagger API documentation
+
+# 
+
+# ---
+
+# 
+
+# \## 🏗️ Architecture
+
+# 
+
+# The project follows \*\*Clean Architecture\*\* principles, ensuring clear separation of concerns:
+
+# 
+
+# \- \*\*API Layer\*\*
+
+# &nbsp; - Controllers
+
+# &nbsp; - Request/Response handling
+
+# &nbsp; - Authentication \& authorization middleware
+
+# 
+
+# \- \*\*Application Layer\*\*
+
+# &nbsp; - Business logic
+
+# &nbsp; - Use cases
+
+# &nbsp; - Interfaces \& contracts
+
+# 
+
+# \- \*\*Domain Layer\*\*
+
+# &nbsp; - Core entities
+
+# &nbsp; - Domain rules
+
+# &nbsp; - No external dependencies
+
+# 
+
+# \- \*\*Infrastructure Layer\*\*
+
+# &nbsp; - Entity Framework Core
+
+# &nbsp; - Database context \& migrations
+
+# &nbsp; - Repository implementations
+
+# 
+
+# ✅ Infrastructure depends only on Application \& Domain  
+
+# ✅ No circular dependencies
+
+# 
+
+# ---
+
+# 
+
+# \## 🔐 Security
+
+# 
 
 # \- PBKDF2 password hashing
 
@@ -62,31 +138,101 @@
 
 # \- Refresh token rotation
 
-# \- Rate limiting on sensitive endpoints
+# \- Token revocation support
 
-# \- Account lockout after failed attempts
+# \- Account lockout on repeated failed attempts
+
+# \- Rate limiting for sensitive endpoints
 
 # 
 
-# \## Technologies
+# ---
+
+# 
+
+# \## 📦 Releases Overview
+
+# 
+
+# \- \*\*v0.1.0\*\* – Architecture \& Core Design
+
+# \- \*\*v1.0.0\*\* – Core Authentication System
+
+# \- \*\*v1.1.0\*\* – Infrastructure Layer \& EF Core (Latest)
+
+# 
+
+# ---
+
+# 
+
+# \## 🛠️ Tech Stack
+
+# 
 
 # \- ASP.NET Core Web API
 
-# \- JWT Bearer Authentication
+# \- Entity Framework Core
 
-# \- Swagger
+# \- SQL Server
 
-# \- SQL Server (Schema designed)
+# \- JWT Authentication
 
 # \- Clean Architecture
 
+# \- Swagger (OpenAPI)
+
 # 
 
-# \## Status
+# ---
 
-# v1.0.0 – Core authentication system completed.
+# 
 
-# Infrastructure layer will be implemented in a future update.
+# \## 📌 Project Status
+
+# 
+
+# ✅ Stable and production-ready  
+
+# 🚧 Actively extensible for future enhancements
+
+# 
+
+# Planned improvements:
+
+# \- Caching layer
+
+# \- Logging \& monitoring
+
+# \- External services integration (Email / SMS)
+
+# \- Advanced security hardening
+
+# 
+
+# ---
+
+# 
+
+# \## 👤 Author
+
+# 
+
+# \*\*Haider Mohammed\*\*  
+
+# Backend Developer | Clean Architecture Enthusiast
+
+# 
+
+# GitHub: https://github.com/HaiderMohammed7
+
+# 
+
+# ---
+
+# 
+
+# > This project demonstrates a real-world authentication system built step by step, from architecture design to production-ready infrastructure.
 
 
 
