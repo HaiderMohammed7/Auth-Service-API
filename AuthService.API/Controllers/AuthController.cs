@@ -91,5 +91,16 @@ namespace AuthService.API.Controllers
             _authService.Register(dto);
             return Ok(ApiResponse<string>.Ok(null, "User registered successfully"));
         }
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public IActionResult ChangePassword(ChangePasswordRequestDto dto)
+        {
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.Name)!);
+
+            _authService.ChangePassword(userId, dto, ip);
+            return Ok(ApiResponse<string>.Ok(null, "Password changed successfully"));
+        }
     }
 }

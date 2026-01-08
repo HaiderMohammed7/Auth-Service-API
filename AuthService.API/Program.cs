@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using AuthService.API.Middleware;
 using AuthService.Application.Interfaces;
