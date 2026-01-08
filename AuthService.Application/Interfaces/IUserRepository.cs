@@ -22,5 +22,6 @@ namespace AuthService.Application.Interfaces
         List<string> GetUserRoles(int userID);
         void Add(User user);
         void AssignRole(int userID, string roleName);
+        void UpdatePassword(int userId, byte[] hash, byte[] salt);
     }
 }

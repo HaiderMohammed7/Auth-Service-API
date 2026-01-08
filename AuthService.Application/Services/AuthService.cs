@@ -132,5 +132,27 @@ namespace AuthService.Application.Services
             _userRepo.Add(user);
             _userRepo.AssignRole(user.UserID, "User");
         }
+
+        public void ChangePassword(int userId, ChangePasswordRequestDto dto, string ipAddress)
+        {
+            var user = _userRepo.GetById(userId)
+                ?? throw new AppException("User not found", 404);
+
+            var isValid = _passwordHasher.VerifyPassword
+                (dto.CurrentPassword,
+                user.PasswordHash,
+                user.PasswordSalt);
+
+            if (!isValid) throw new AppException("Current password is incorrect", 400);
+
+            _passwordHasher.CreatePasswordHash
+                (dto.NewPassword,
+                out var newHash,
+                out var newSalt);
+
+            _userRepo.UpdatePassword(userId, newHash, newSalt);
+
+            _refreshTokenService.RevokeAllForUser(userId, ipAddress);
+        }
     }
 }

@@ -90,5 +90,17 @@ namespace AuthService.Infrastructure.Repositories
             });
             _context.SaveChanges();
         }
+
+        public void UpdatePassword(int userId, byte[] hash, byte[] salt)
+        {
+            var user = _context.Users.Find(userId);
+            if (user == null) return;
+
+            user.PasswordHash = hash;
+            user.PasswordSalt = salt;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            _context.SaveChanges();
+        }
     }
 }
