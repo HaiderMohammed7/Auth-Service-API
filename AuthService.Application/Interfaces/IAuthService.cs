@@ -13,5 +13,6 @@ namespace AuthService.Application.Interfaces
         TokenResponseDto Refresh(string refreshToken, string ipAddress);
         void Logout(string refreshToken, string ipAddress);
         void LogoutAll(int userId, string ipAddress);
+        void Register(RegisterRequestDto dto);
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AuthService.Application.Exceptions;
 using AuthService.Application.Interfaces;
+using AuthService.Domain.Entities;
 using AuthService.Shared.DTOs;
 
 namespace AuthService.Application.Services
@@ -26,7 +27,7 @@ namespace AuthService.Application.Services
 
         public TokenResponseDto Login(LoginRequestDto request, string ipAddress)
         {
-            var user = _userRepo.GetByEmail(request.Email);
+            var user = _userRepo.GetByLoginIdentifier(request.Identifier);
 
             if(user == null)
                 throw new AppException("Invalid credentials", 401);
@@ -97,6 +98,39 @@ namespace AuthService.Application.Services
         public void LogoutAll(int userId, string ipAddress)
         {
             _refreshTokenService.RevokeAllForUser(userId, ipAddress);
+        }
+
+        public void Register(RegisterRequestDto dto)
+        {
+            var existingUser = _userRepo.GetByEmailOrUserName(dto.Email, dto.UserName);
+
+            if (existingUser != null)
+            {
+                if (existingUser.Email == dto.Email)
+                    throw new AppException("Email already exists", 409);
+
+                if (existingUser.UserName == dto.UserName)
+                    throw new AppException("UserName already exists", 409);
+            }
+
+
+            _passwordHasher.CreatePasswordHash(dto.Password, out var hash, out var salt);
+
+            var user = new User
+            {
+                Email = dto.Email,
+                UserName = dto.UserName,
+                PasswordHash = hash,
+                PasswordSalt = salt,
+                IsActive = true,
+                IsLocked = false,
+                FailedLoginAttempts = 0,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+            };
+
+            _userRepo.Add(user);
+            _userRepo.AssignRole(user.UserID, "User");
         }
     }
 }

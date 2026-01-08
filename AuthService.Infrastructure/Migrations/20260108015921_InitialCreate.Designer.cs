@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthService.Infrastructure.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20260105184225_InitialCreate")]
+    [Migration("20260108015921_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -70,7 +70,8 @@ namespace AuthService.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("IPAddress")
                         .IsRequired()
@@ -112,7 +113,8 @@ namespace AuthService.Infrastructure.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
@@ -158,7 +160,8 @@ namespace AuthService.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<int>("FailedLoginAttempts")
                         .HasColumnType("int");
@@ -183,10 +186,20 @@ namespace AuthService.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("UserID");
 
                     b.HasIndex("Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("UX_Users_Email");
+
+                    b.HasIndex("UserName")
+                        .IsUnique()
+                        .HasDatabaseName("UX_Users_UserName");
 
                     b.ToTable("Users");
                 });
