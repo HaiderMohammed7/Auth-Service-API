@@ -21,6 +21,15 @@ namespace AuthService.Infrastructure.Repositories
         public User? GetByEmail(string email)
           => _context.Users.SingleOrDefault(u => u.Email == email);
 
+        public User? GetByUserName(string userName)
+            => _context.Users.SingleOrDefault(u =>u.UserName == userName);
+
+        public User? GetByLoginIdentifier(string Identifier)
+            => _context.Users.SingleOrDefault(u => u.Email == Identifier || u.UserName == Identifier);
+
+        public User? GetByEmailOrUserName(string email, string userName)
+            => _context.Users.SingleOrDefault(u => u.Email == email || u.UserName == userName);
+
         public User? GetById(int userId)
             => _context.Users.Find(userId);
 
@@ -61,6 +70,24 @@ namespace AuthService.Infrastructure.Repositories
             if (user == null) return;
 
             user.LastLoginAt = DateTime.UtcNow;
+            _context.SaveChanges();
+        }
+
+        public void Add(User user)
+        {
+            _context.Users.Add(user);
+            _context.SaveChanges();
+        }
+
+        public void AssignRole(int userId, string roleName)
+        {
+            var role = _context.Roles.Single(r => r.RoleName == roleName);
+
+            _context.UserRoles.Add(new UserRole
+            {
+                UserID = userId,
+                RoleID = role.RoleID,
+            });
             _context.SaveChanges();
         }
     }

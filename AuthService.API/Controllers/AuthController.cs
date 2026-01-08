@@ -47,12 +47,19 @@ namespace AuthService.API.Controllers
                 ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
             var email = User.FindFirstValue(ClaimTypes.Email);
-            var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+
+            var roles = User.FindAll(ClaimTypes.Role)
+                .Select(r => r.Value)
+                .ToList();
+
 
             return Ok(new UserDto
             {
                 UserID = int.Parse(userId!),
                 Email = email,
+                UserName = userName,
                 Roles = roles
             });
         }
@@ -76,6 +83,13 @@ namespace AuthService.API.Controllers
 
             _authService.LogoutAll(userId, ip);
             return NoContent();
+        }
+
+        [HttpPost("register")]
+        public IActionResult Rigister([FromBody] RegisterRequestDto dto)
+        {
+            _authService.Register(dto);
+            return Ok(ApiResponse<string>.Ok(null, "User registered successfully"));
         }
     }
 }

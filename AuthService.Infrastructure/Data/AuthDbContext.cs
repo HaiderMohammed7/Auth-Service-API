@@ -23,36 +23,44 @@ namespace AuthService.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.Property(u => u.Email).IsRequired().HasMaxLength(256);
+                entity.Property(u => u.UserName).IsRequired().HasMaxLength(100);
 
-            modelBuilder.Entity<UserRole>()
-                .HasOne(ur => ur.User)
-                .WithMany(u => u.UserRoles)
-                .HasForeignKey(ur => ur.UserID)
-                .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(u => u.Email).IsUnique().HasDatabaseName("UX_Users_Email");
+                entity.HasIndex(u => u.UserName).IsUnique().HasDatabaseName("UX_Users_UserName");
+            });
 
-            modelBuilder.Entity<UserRole>()
-                .HasOne(ur => ur.Role)
-                .WithMany(r => r.UserRoles)
-                .HasForeignKey(ur => ur.RoleID)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<UserRole>(entity =>
+            {
+                entity.HasOne(ur => ur.User).WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserID).OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<UserRole>()
-                .HasIndex(ur => new { ur.UserID, ur.RoleID })
-                .IsUnique();
+                entity.HasOne(ur => ur.Role).WithMany(u => u.UserRoles)
+               .HasForeignKey(ur => ur.RoleID).OnDelete(DeleteBehavior.Cascade);
 
+                entity.HasIndex(ur => new { ur.UserID, ur.RoleID }).IsUnique();
+            });
 
-            modelBuilder.Entity<RefreshToken>()
-                .HasIndex(rt => rt.Token)
-                .IsUnique();
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.Property(rt => rt.Token).IsRequired().HasMaxLength(256);
 
-            modelBuilder.Entity<LoginAttempt>()
-                .HasIndex(la => la.Email);
+                entity.HasIndex(rt => rt.Token).IsUnique();
+            });
 
-            modelBuilder.Entity<AuditLog>()
-                .HasIndex(a => a.UserID);
+            modelBuilder.Entity<LoginAttempt>(entity =>
+            {
+                entity.Property(la => la.Email).IsRequired().HasMaxLength(256);
+
+                entity.HasIndex(la => la.Email);
+            });
+
+            modelBuilder.Entity<AuditLog>(entity =>
+            {
+                entity.HasIndex(a => a.UserID);
+            });
         }
     }
 }

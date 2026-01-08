@@ -9,6 +9,7 @@ namespace AuthService.Domain.Entities
     public class User
     {
         public int UserID { get; set; }
+        public string UserName { get; set; } = null!;
 
         public string Email { get; set; } = null!;
         public byte[] PasswordHash { get; set; } = null!;
