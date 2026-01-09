@@ -15,5 +15,7 @@ namespace AuthService.Application.Interfaces
         void LogoutAll(int userId, string ipAddress);
         void Register(RegisterRequestDto dto);
         void ChangePassword(int userId, ChangePasswordRequestDto dto, string ipAddress);
+        void ForgotPassword(ForgotPasswordRequestDto dto);
+        void ResetPassword(ResetPasswordRequestDto dto, string ipAddress);
     }
 }

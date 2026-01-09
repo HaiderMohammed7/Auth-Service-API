@@ -102,5 +102,29 @@ namespace AuthService.Infrastructure.Repositories
 
             _context.SaveChanges();
         }
+
+        public void AddResetToken(PasswordResetToken token)
+        {
+            _context.PasswordResetTokens.Add(token);
+            _context.SaveChanges();
+        }
+
+        public PasswordResetToken? GetValidResetToken(byte[] token)
+        {
+           var tokens = _context.PasswordResetTokens.Where(t =>
+                t.UsedAt == null && t.ExpiresAt > DateTime.UtcNow).AsEnumerable();
+
+            return tokens.FirstOrDefault(t =>
+                    t.TokenHash.SequenceEqual(token));
+        }
+
+        public void MarkResetTokenUsed(int Id)
+        {
+            var resetToken = _context.PasswordResetTokens.Find(Id);
+            if (resetToken == null) return;
+
+            resetToken.UsedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+        }
     }
 }
