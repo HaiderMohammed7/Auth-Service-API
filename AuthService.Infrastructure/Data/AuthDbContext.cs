@@ -20,6 +20,7 @@ namespace AuthService.Infrastructure.Data
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<LoginAttempt> LoginAttempts => Set<LoginAttempt>();
         public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+        public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

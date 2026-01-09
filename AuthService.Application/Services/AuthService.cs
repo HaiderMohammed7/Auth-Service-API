@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using AuthService.Application.Exceptions;
@@ -153,6 +154,48 @@ namespace AuthService.Application.Services
             _userRepo.UpdatePassword(userId, newHash, newSalt);
 
             _refreshTokenService.RevokeAllForUser(userId, ipAddress);
+        }
+
+        public void ForgotPassword(ForgotPasswordRequestDto dto)
+        {
+            var user = _userRepo.GetByEmail(dto.Email);
+            if (user == null) return;
+
+            var rawToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+
+            using var sha = SHA256.Create();
+            var tokenHash = sha.ComputeHash(Encoding.UTF8.GetBytes(rawToken));
+
+            var resetToken = new PasswordResetToken
+            {
+                UserID = user.UserID,
+                TokenHash = tokenHash,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _userRepo.AddResetToken(resetToken);
+
+            //هذا لاحقًا: Send Email (rawToken)
+        }
+
+        public void ResetPassword(ResetPasswordRequestDto dto, string ipAddress)
+        {
+            using var sha = SHA256.Create();
+            var tokenHash = sha.ComputeHash(Encoding.UTF8.GetBytes(dto.Token));
+
+            var resetToken = _userRepo.GetValidResetToken(tokenHash)
+                ?? throw new AppException("Invalid or expired token", 400);
+
+            var user = _userRepo.GetById(resetToken.UserID)
+                ?? throw new AppException("User not found", 400);
+
+            _passwordHasher.CreatePasswordHash(dto.NewPassword, out var hash, out var salt);
+
+            _userRepo.UpdatePassword(user.UserID, hash, salt);
+            _userRepo.MarkResetTokenUsed(resetToken.ID);
+
+            _refreshTokenService.RevokeAllForUser(user.UserID, ipAddress);
         }
     }
 }

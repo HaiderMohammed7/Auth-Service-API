@@ -97,10 +97,25 @@ namespace AuthService.API.Controllers
         public IActionResult ChangePassword(ChangePasswordRequestDto dto)
         {
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.Name)!);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             _authService.ChangePassword(userId, dto, ip);
             return Ok(ApiResponse<string>.Ok(null, "Password changed successfully"));
+        }
+
+        [HttpPost("forgot-password")]
+        public IActionResult ForgotPassword(ForgotPasswordRequestDto dto)
+        {
+            _authService.ForgotPassword(dto);
+            return Ok(ApiResponse<string>.Ok(null, "If the email exists, a reset Link was sent"));
+        }
+
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword(ResetPasswordRequestDto dto)
+        {
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            _authService.ResetPassword(dto, ip);
+            return Ok(ApiResponse<string>.Ok(null, "Password reset successflly"));
         }
     }
 }

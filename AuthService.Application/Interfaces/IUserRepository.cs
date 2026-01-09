@@ -23,5 +23,9 @@ namespace AuthService.Application.Interfaces
         void Add(User user);
         void AssignRole(int userID, string roleName);
         void UpdatePassword(int userId, byte[] hash, byte[] salt);
+
+        void AddResetToken(PasswordResetToken token);
+        PasswordResetToken? GetValidResetToken(byte[] tokenHash);
+        void MarkResetTokenUsed(int Id);
     }
 }
