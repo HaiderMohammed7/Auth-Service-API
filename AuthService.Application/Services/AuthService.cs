@@ -176,7 +176,10 @@ namespace AuthService.Application.Services
 
             _userRepo.AddResetToken(resetToken);
 
-            //هذا لاحقًا: Send Email (rawToken)
+            Console.WriteLine("================================");
+            Console.WriteLine($"Password reset token for {user.Email}");
+            Console.WriteLine($"Token: {rawToken}");
+            Console.WriteLine("================================");
         }
 
         public void ResetPassword(ResetPasswordRequestDto dto, string ipAddress)
