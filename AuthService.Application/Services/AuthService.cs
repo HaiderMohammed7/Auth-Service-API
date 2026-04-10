@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using AuthService.Application.Exceptions;
+﻿using AuthService.Application.Exceptions;
 using AuthService.Application.Interfaces;
 using AuthService.Domain.Entities;
 using AuthService.Shared.DTOs;
+using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+
 
 namespace AuthService.Application.Services
 {
@@ -17,39 +16,73 @@ namespace AuthService.Application.Services
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
         private readonly IRefreshTokenService _refreshTokenService;
+        private readonly ILogger<AuthService> _logger;
+        private readonly IAuditService _auditService;
 
-        public AuthService(IUserRepository userRepo, IPasswordHasher passwordHasher, ITokenService tokenService, IRefreshTokenService refreshTokenService)
+        public AuthService(IUserRepository userRepo, IPasswordHasher passwordHasher,
+            ITokenService tokenService, IRefreshTokenService refreshTokenService,
+            ILogger<AuthService> logger, IAuditService auditService)
         {
             _userRepo = userRepo;
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
             _refreshTokenService = refreshTokenService;
+            _logger = logger;
+            _auditService = auditService;
         }
 
         public TokenResponseDto Login(LoginRequestDto request, string ipAddress)
         {
             var user = _userRepo.GetByLoginIdentifier(request.Identifier);
 
-            if(user == null)
-                throw new AppException("Invalid credentials", 401);
-
-            if(!user.IsActive)
-                throw new AppException("Account disabled", 403);
-
-            if (user.IsLocked)
-                throw new AppException("Account is Locked. Try Later.", 423);
-
-            var isValidPassword = _passwordHasher.VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt);
-
-            if(!isValidPassword)
+            if (user == null)
             {
-                _userRepo.IncrementFailedAttempts(user.UserID);
+                _logger.LogWarning("Login failed. User not found. Identifier: {Identifier}, IP: {IP}", request.Identifier, ipAddress);
 
-                if(user.FailedLoginAttempts + 1 >= 5)
-                    _userRepo.LockUser(user.UserID);
+                _auditService.Log(null, "LoginFailed", request.Identifier, ipAddress);
 
                 throw new AppException("Invalid credentials", 401);
             }
+
+
+            if (!user.IsActive)
+            {
+                _logger.LogWarning("Login attempt for disabled account. UserId: {UserId}, IP: {IP}", user.UserID, ipAddress);
+
+                throw new AppException("Account disabled", 403);
+            }
+
+
+            if (user.IsLocked)
+            {
+                _logger.LogWarning("Login attempt for locked account. UserId: {UserId}, IP: {IP}", user.UserID, ipAddress);
+
+                throw new AppException("Account is Locked. Try Later.", 423);
+            }
+
+
+            var isValidPassword = _passwordHasher.VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt);
+
+            if (!isValidPassword)
+            {
+                _logger.LogWarning("Invalid password. UserId: {UserId}, IP: {IP}", user.UserID, ipAddress);
+
+                _auditService.Log(null, "LoginFailed", request.Identifier, ipAddress);
+
+                _userRepo.IncrementFailedAttempts(user.UserID);
+
+                if (user.FailedLoginAttempts + 1 >= 5)
+                {
+                    _logger.LogWarning("User locked after failed attempts. UserId: {UserId}, IP: {IP}", user.UserID, ipAddress);
+
+                    _userRepo.LockUser(user.UserID);
+                }
+
+                throw new AppException("Invalid credentials", 401);
+            }
+
+            _logger.LogInformation("User logged in successfully. UserId: {UserId}, IP: {IP}", user.UserID, ipAddress);
+            _auditService.Log(user.UserID, "Login", null, ipAddress);
 
             _userRepo.ResetFailedAttempts(user.UserID);
             _userRepo.UpdateLastLogin(user.UserID);
@@ -73,7 +106,12 @@ namespace AuthService.Application.Services
             var existingToken = _refreshTokenService.Get(refreshToken);
 
             if (existingToken == null || existingToken.RevokedAt != null || existingToken.ExpiresAt < DateTime.UtcNow)
+            {
+                _logger.LogWarning("Invalid refresh token attempt from IP: {IP}", ipAddress);
+
                 throw new Exception("Invalid refresh token");
+            }
+                
 
             var user = _userRepo.GetById(existingToken.UserID) ?? throw new Exception("User not found");
 
@@ -83,6 +121,8 @@ namespace AuthService.Application.Services
             var newRefreshToken = _refreshTokenService.Create(user.UserID, ipAddress);
 
             var newAccessToken = _tokenService.GenerateAccessToken(user, roles);
+
+            _logger.LogInformation("Token refreshed successfully. UserId: {UserId}, IP: {IP}", user.UserID,ipAddress);
 
             return new TokenResponseDto
             {
@@ -99,6 +139,7 @@ namespace AuthService.Application.Services
         public void LogoutAll(int userId, string ipAddress)
         {
             _refreshTokenService.RevokeAllForUser(userId, ipAddress);
+            _auditService.Log(userId, "Logout", null, ipAddress);
         }
 
         public void Register(RegisterRequestDto dto)
@@ -144,16 +185,22 @@ namespace AuthService.Application.Services
                 user.PasswordHash,
                 user.PasswordSalt);
 
-            if (!isValid) throw new AppException("Current password is incorrect", 400);
+            if (!isValid)
+            {
+                _logger.LogWarning("Change password failed. Incorrect current password. UserId: {UserId}, IP: {IP}", userId, ipAddress);
 
-            _passwordHasher.CreatePasswordHash
-                (dto.NewPassword,
-                out var newHash,
-                out var newSalt);
+                throw new AppException("Current password is incorrect", 400);
+            }
+
+            _passwordHasher.CreatePasswordHash(dto.NewPassword,out var newHash,out var newSalt);
 
             _userRepo.UpdatePassword(userId, newHash, newSalt);
 
+            _logger.LogInformation("Password changed successfully. UserId: {UserId}, IP: {IP}",userId, ipAddress);
+
             _refreshTokenService.RevokeAllForUser(userId, ipAddress);
+
+            _auditService.Log(userId, "ChangePassword", null, ipAddress);
         }
 
         public void ForgotPassword(ForgotPasswordRequestDto dto)
@@ -199,6 +246,8 @@ namespace AuthService.Application.Services
             _userRepo.MarkResetTokenUsed(resetToken.ID);
 
             _refreshTokenService.RevokeAllForUser(user.UserID, ipAddress);
+
+            _auditService.Log(user.UserID, "ResetPassword", null, ipAddress);
         }
     }
 }

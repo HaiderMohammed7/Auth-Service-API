@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using AuthService.Application.Interfaces;
 using AuthService.Domain.Entities;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +30,7 @@ namespace AuthService.Application.Services
             foreach (var role in roles)
                 claims.Add(new Claim(ClaimTypes.Role, role));
 
-            var Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]!));
+            var Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")!));
 
             var creds = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
 

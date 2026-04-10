@@ -1,40 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using AuthService.Application.Interfaces;
+using Konscious.Security.Cryptography;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using AuthService.Application.Interfaces;
 
 namespace AuthService.Application.Services
 {
     public class PasswordHasher : IPasswordHasher
     {
-        private const int Iterations = 100_000;
+        private const int SaltSize = 16;
         private const int KeySize = 32;
+        private const int Iterations = 4;
+        private const int MemorySize = 65536;
+        private const int Parallelism = 4;
 
         public void CreatePasswordHash(string password, out byte[] hash, out byte[] salt)
         {
-            salt = RandomNumberGenerator.GetBytes(16);
+            salt = RandomNumberGenerator.GetBytes(SaltSize);
 
-            using var pbkdf2 = new Rfc2898DeriveBytes(
-                password,
-                salt,
-                Iterations,
-                HashAlgorithmName.SHA256);
+            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
+            {
+                Salt = salt,
+                Iterations = Iterations,
+                MemorySize = MemorySize,
+                DegreeOfParallelism = Parallelism
+            };
 
-            hash = pbkdf2.GetBytes(KeySize);
+            hash = argon2.GetBytes(KeySize);
         }
 
         public bool VerifyPassword(string password, byte[] storedHash, byte[] storedSalt)
         {
-            using var pbkdf2 = new Rfc2898DeriveBytes(
-                password,
-                storedSalt,
-                Iterations,
-                HashAlgorithmName.SHA256);
+            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
+            {
+                Salt = storedSalt,
+                Iterations = Iterations,
+                MemorySize = MemorySize,
+                DegreeOfParallelism = Parallelism
+            };
 
-            var computedHash = pbkdf2.GetBytes(KeySize);
+            var computedHash = argon2.GetBytes(KeySize);
+
             return CryptographicOperations.FixedTimeEquals(computedHash, storedHash);
         }
     }

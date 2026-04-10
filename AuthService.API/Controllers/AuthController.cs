@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using AuthService.Application.Interfaces;
-using AuthService.Domain.Entities;
 using AuthService.Shared.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace AuthService.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/auth")]
     public class AuthController : ControllerBase
@@ -21,6 +21,7 @@ namespace AuthService.API.Controllers
             _authService = authService;
         }
 
+        [AllowAnonymous]
         [EnableRateLimiting("auth")]
         [HttpPost("refresh")]
         public IActionResult Refresh([FromBody] RefreshTokenRequestDto dto)
@@ -30,6 +31,7 @@ namespace AuthService.API.Controllers
             return Ok(ApiResponse<TokenResponseDto>.Ok(result));
         }
 
+        [AllowAnonymous]
         [EnableRateLimiting("auth")]
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequestDto dto)
@@ -38,8 +40,7 @@ namespace AuthService.API.Controllers
             var result = _authService.Login(dto,ip);
             return Ok(ApiResponse<TokenResponseDto>.Ok(result));
         }
-
-        [Authorize]
+        
         [HttpGet("me")]
         public IActionResult Me()
         {
@@ -64,7 +65,6 @@ namespace AuthService.API.Controllers
             });
         }
 
-        [Authorize]
         [HttpPost("logout")]
         public IActionResult Logout([FromBody] RefreshTokenRequestDto dto)
         {
@@ -73,7 +73,6 @@ namespace AuthService.API.Controllers
             return NoContent();
         }
 
-        [Authorize]
         [HttpPost("logout-all")]
         public IActionResult LogoutAll()
         {
@@ -85,6 +84,7 @@ namespace AuthService.API.Controllers
             return NoContent();
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Rigister([FromBody] RegisterRequestDto dto)
         {
@@ -92,7 +92,6 @@ namespace AuthService.API.Controllers
             return Ok(ApiResponse<string>.Ok(null, "User registered successfully"));
         }
 
-        [Authorize]
         [HttpPost("change-password")]
         public IActionResult ChangePassword(ChangePasswordRequestDto dto)
         {
@@ -103,6 +102,7 @@ namespace AuthService.API.Controllers
             return Ok(ApiResponse<string>.Ok(null, "Password changed successfully"));
         }
 
+        [AllowAnonymous]
         [HttpPost("forgot-password")]
         public IActionResult ForgotPassword(ForgotPasswordRequestDto dto)
         {
@@ -110,6 +110,7 @@ namespace AuthService.API.Controllers
             return Ok(ApiResponse<string>.Ok(null, "If the email exists, a reset Link was sent"));
         }
 
+        [AllowAnonymous]
         [HttpPost("reset-password")]
         public IActionResult ResetPassword(ResetPasswordRequestDto dto)
         {

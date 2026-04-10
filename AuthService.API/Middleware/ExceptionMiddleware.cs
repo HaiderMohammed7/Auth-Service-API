@@ -2,6 +2,7 @@
 using System.Text.Json;
 using AuthService.Application.Exceptions;
 using AuthService.Shared.Responses;
+using Serilog;
 
 namespace AuthService.API.Middleware
 {
@@ -22,6 +23,8 @@ namespace AuthService.API.Middleware
             }
             catch (AppException ex)
             {
+                Log.Error(ex, "Unhandled exception");
+
                 context.Response.StatusCode = ex.StatusCode;
                 await WriteResponse(context, ex.Message);
             }
@@ -39,6 +42,5 @@ namespace AuthService.API.Middleware
             var response = ApiResponse<string>.Fail(message);
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
-
     }
 }
