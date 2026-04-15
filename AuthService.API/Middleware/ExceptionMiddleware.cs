@@ -28,10 +28,10 @@ namespace AuthService.API.Middleware
                 context.Response.StatusCode = ex.StatusCode;
                 await WriteResponse(context, ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await WriteResponse(context, ex.Message);
+                await WriteResponse(context, "Somthing went Wrong..");
             }
 
         }
