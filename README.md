@@ -117,9 +117,7 @@ Contains DTOs, helper classes, and standardized API responses.
 
 ## Architecture
 
-<p align="center">
-  <img src="README-Images/Architecture.png" width="900">
-</p>
+![Architecture](README-Images/Architecture.png)
 
 ---
 
