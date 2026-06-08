@@ -115,6 +115,34 @@ Contains DTOs, helper classes, and standardized API responses.
 
 ---
 
+## Architecture
+
+![Architecture](images/Architecture.png)
+
+---
+
+## API Overview
+
+![Swagger Overview](images/swagger-overview.png)
+
+---
+
+## Authentication Example
+
+### Login Request
+
+![Login Request](images/swagger-Login_Request.png)
+
+### Login Response
+
+![Login Response](images/swagger-Login_Response.png)
+
+---
+
+## Refresh Token Rotation
+
+![Refresh Response](images/swagger-Refresh_Response.png)
+
 ## Technologies
 
 * ASP.NET Core Web API
