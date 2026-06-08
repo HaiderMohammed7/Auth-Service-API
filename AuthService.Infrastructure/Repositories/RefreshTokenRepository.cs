@@ -27,9 +27,8 @@ namespace AuthService.Infrastructure.Repositories
         public RefreshToken? GetByToken(string token)
             => _context.RefreshTokens.SingleOrDefault(t => t.Token == token);
 
-        public void Update (RefreshToken token)
+        public void Save ()
         {
-            _context.RefreshTokens.Update(token);
             _context.SaveChanges();
         }
 

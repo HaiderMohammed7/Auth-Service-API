@@ -45,7 +45,7 @@ namespace AuthService.Application.Services
             refreshToken.RevokedAt = DateTime.UtcNow;
             refreshToken.RevokedByIP = ipAddress;
 
-            _refreshTokenRepository.Update(refreshToken);
+            _refreshTokenRepository.Save();
         }
 
         public void RevokeAllForUser(int userId, string ipAddress)
@@ -55,9 +55,10 @@ namespace AuthService.Application.Services
             foreach (var token in tokens)
             {
                 token.RevokedAt = DateTime.UtcNow;
-                token.RevokedByIP = ipAddress;
-                _refreshTokenRepository.Update(token);
+                token.RevokedByIP = ipAddress;    
             }
+
+            _refreshTokenRepository.Save();
         }
     }
 }

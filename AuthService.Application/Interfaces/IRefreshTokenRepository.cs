@@ -10,7 +10,7 @@ namespace AuthService.Application.Interfaces
     public interface IRefreshTokenRepository
     {
         void Add(RefreshToken token);
-        void Update(RefreshToken token);
+        void Save();
         RefreshToken? GetByToken(string token);
         List<RefreshToken> GetActiveTokensByUser(int userId);
     }
