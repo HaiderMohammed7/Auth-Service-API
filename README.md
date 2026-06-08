@@ -180,7 +180,7 @@ The authentication flow follows modern security practices:
 
 ### Current Version
 
-v1.2.0
+v1.3.0
 
 ### Completed
 
