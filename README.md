@@ -39,6 +39,25 @@ The project provides a secure and reusable authentication system that can be int
 * Global Exception Handling
 * Request Logging Middleware
 
+### Monitoring & Logging
+
+- Request Logging Middleware
+- Audit Logging
+- Centralized Logging
+- Request Tracking
+
+### Error Handling
+
+- Global Exception Handling Middleware
+- Standardized API Responses
+- Consistent Error Responses
+
+### API Design
+
+- Standardized API Response Wrapper
+- DTO-based Communication
+- Clean Separation of Concerns
+
 ---
 
 ## Architecture
