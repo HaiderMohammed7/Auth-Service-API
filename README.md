@@ -117,13 +117,17 @@ Contains DTOs, helper classes, and standardized API responses.
 
 ## Architecture
 
-![Architecture](images/Architecture.png)
+<p align="center">
+  <img src="README-Images/Architecture.png" width="900">
+</p>
 
 ---
 
 ## API Overview
 
-![Swagger Overview](images/swagger-overview.png)
+<p align="center">
+  <img src="README-Images/swagger-overview.png" width="900">
+</p>
 
 ---
 
@@ -131,17 +135,23 @@ Contains DTOs, helper classes, and standardized API responses.
 
 ### Login Request
 
-![Login Request](images/swagger-Login_Request.png)
+<p align="center">
+  <img src="README-Images/swagger-Login_Request.png" width="900">
+</p>
 
 ### Login Response
 
-![Login Response](images/swagger-Login_Response.png)
+<p align="center">
+  <img src="README-Images/swagger-Login_Response.png" width="900">
+</p>
 
 ---
 
 ## Refresh Token Rotation
 
-![Refresh Response](images/swagger-Refresh_Response.png)
+<p align="center">
+  <img src="README-Images/swagger-Refresh_Response.png" width="900">
+</p>
 
 ## Technologies
 
