@@ -31,7 +31,7 @@ The project provides a secure and reusable authentication system that can be int
 
 ### Security
 
-* PBKDF2 Password Hashing
+* Argon2 Password Hashing
 * Role-Based Authorization
 * Rate Limiting
 * Brute Force Protection
@@ -116,13 +116,13 @@ Contains DTOs, helper classes, and standardized API responses.
 ---
 
 ## Architecture
-
+Project structure following Clean Architecture principles.
 ![Architecture](README-Images/Architecture.png)
 
 ---
 
 ## API Overview
-
+Swagger documentation exposing all available authentication endpoints.
 <p align="center">
   <img src="README-Images/swagger-overview.png" width="900">
 </p>
@@ -138,7 +138,7 @@ Contains DTOs, helper classes, and standardized API responses.
 </p>
 
 ### Login Response
-
+Successful login returns both Access Token and Refresh Token.
 <p align="center">
   <img src="README-Images/swagger-Login_Response.png" width="900">
 </p>
