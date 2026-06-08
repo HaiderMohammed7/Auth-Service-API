@@ -60,7 +60,7 @@ The project provides a secure and reusable authentication system that can be int
 
 ---
 
-## Architecture
+## Project Structure
 
 The project follows Clean Architecture principles.
 
