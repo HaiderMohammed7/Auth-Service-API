@@ -1,92 +1,199 @@
-# \# Auth Service API
+# Auth Service API
 
-# 
+A centralized Authentication & Authorization API built with ASP.NET Core and Clean Architecture.
 
-# Centralized Authentication \& Authorization API built with ASP.NET Core.
+The project provides a secure and reusable authentication system that can be integrated with multiple applications. It supports JWT authentication, refresh token rotation, role-based authorization, password management, and security protections against common attacks.
 
-# 
+---
 
-# \## Features
+## Features
 
-# \- JWT Authentication
+### Authentication
 
-# \- Refresh Token with Rotation
+* User Registration
+* User Login
+* User Logout
+* Logout From All Devices
+* Current User Information (`/me`)
 
-# \- Secure Password Hashing (PBKDF2)
+### Token Management
 
-# \- Role-based Authorization
+* JWT Access Tokens
+* Refresh Tokens
+* Refresh Token Rotation
+* Secure Token Revocation
 
-# \- Login / Logout / Refresh
+### Password Management
 
-# \- Rate Limiting \& Brute-force Protection
+* Change Password
+* Forgot Password
+* Reset Password
 
-# \- Global Error Handling
+### Security
 
-# \- Swagger Documentation
+* PBKDF2 Password Hashing
+* Role-Based Authorization
+* Rate Limiting
+* Brute Force Protection
+* Account Lockout After Failed Login Attempts
+* Global Exception Handling
+* Request Logging Middleware
 
-# 
+---
 
-# \## Architecture
+## Architecture
 
-# \- API Layer
+The project follows Clean Architecture principles.
 
-# \- Application (Business Logic)
+```text
+AuthService.API
+│
+├── Controllers
+├── Middleware
+│
+AuthService.Application
+│
+├── Interfaces
+├── Services
+├── Exceptions
+│
+AuthService.Domain
+│
+├── Entities
+├── Enums
+│
+AuthService.Infrastructure
+│
+├── Data
+├── Repositories
+├── Migrations
+│
+AuthService.Shared
+│
+├── DTOs
+├── Helpers
+├── Responses
+```
 
-# \- Domain (Entities)
+### Layers
 
-# \- Infrastructure (Planned)
+#### API Layer
 
-# \- Shared (DTOs \& Responses)
+Handles HTTP requests, responses, middleware, and endpoint exposure.
 
-# 
+#### Application Layer
 
-# \## Authentication Flow
+Contains business logic, use cases, service contracts, and application rules.
 
-# 1\. Login with email \& password
+#### Domain Layer
 
-# 2\. Receive Access Token + Refresh Token
+Contains core entities and business models.
 
-# 3\. Use Access Token for protected endpoints
+#### Infrastructure Layer
 
-# 4\. Refresh Access Token using Refresh Token
+Handles data access, repositories, database operations, and migrations.
 
-# 5\. Logout revokes refresh tokens
+#### Shared Layer
 
-# 
+Contains DTOs, helper classes, and standardized API responses.
 
-# \## Security
+---
 
-# \- PBKDF2 password hashing
+## Available Endpoints
 
-# \- JWT with claims \& roles
+| Method | Endpoint                  |
+| ------ | ------------------------- |
+| POST   | /api/auth/register        |
+| POST   | /api/auth/login           |
+| POST   | /api/auth/refresh         |
+| GET    | /api/auth/me              |
+| POST   | /api/auth/logout          |
+| POST   | /api/auth/logout-all      |
+| POST   | /api/auth/change-password |
+| POST   | /api/auth/forgot-password |
+| POST   | /api/auth/reset-password  |
 
-# \- Refresh token rotation
+---
 
-# \- Rate limiting on sensitive endpoints
+## Architecture
 
-# \- Account lockout after failed attempts
+![Architecture](images/Architecture.png)
 
-# 
+---
 
-# \## Technologies
+## API Overview
 
-# \- ASP.NET Core Web API
+![Swagger Overview](images/swagger-overview.png)
 
-# \- JWT Bearer Authentication
+---
 
-# \- Swagger
+## Authentication Example
 
-# \- SQL Server (Schema designed)
+### Login Request
 
-# \- Clean Architecture
+![Login Request](images/swagger-Login_Request.png)
 
-# 
+### Login Response
 
-# \## Status
+![Login Response](images/swagger-Login_Response.png)
 
-# v1.0.0 – Core authentication system completed.
+---
 
-# Infrastructure layer will be implemented in a future update.
+## Refresh Token Rotation
 
+![Refresh Response](images/swagger-Refresh_Response.png)
 
+## Technologies
 
+* ASP.NET Core Web API
+* Entity Framework Core
+* SQL Server
+* JWT Bearer Authentication
+* Swagger / OpenAPI
+* Clean Architecture
+* Dependency Injection
+
+---
+
+## Security Design
+
+The authentication flow follows modern security practices:
+
+1. User logs in using email and password.
+2. API issues an Access Token and Refresh Token.
+3. Access Token is used for protected endpoints.
+4. Refresh Token Rotation generates a new refresh token on every refresh request.
+5. Logout revokes active refresh tokens.
+6. Failed login attempts are tracked and can trigger account lockout.
+
+---
+
+## Project Status
+
+### Current Version
+
+v1.2.0
+
+### Completed
+
+* Authentication System
+* Authorization System
+* Refresh Token Rotation
+* Password Management
+* Security Hardening
+* Clean Architecture Implementation
+
+### Future Enhancements
+
+* Email Service Integration
+* Two-Factor Authentication (2FA)
+* Docker Support
+* CI/CD Pipeline
+
+---
+
+## API Documentation
+
+Swagger UI is included for testing and exploring all available endpoints.
+
+---
