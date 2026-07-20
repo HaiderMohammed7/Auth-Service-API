@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AuthService.Domain.Entities;
+﻿using AuthService.Domain.Entities;
 
 namespace AuthService.Application.Interfaces
 {
@@ -27,5 +22,9 @@ namespace AuthService.Application.Interfaces
         void AddResetToken(PasswordResetToken token);
         PasswordResetToken? GetValidResetToken(byte[] tokenHash);
         void MarkResetTokenUsed(int Id);
+
+        Task<List<User>> GetUsersByIdsAsync(IEnumerable<int> userIds);
+
+        Task<User?> GetByIdAsync(int userId);
     }
 }

@@ -118,5 +118,26 @@ namespace AuthService.API.Controllers
             _authService.ResetPassword(dto, ip);
             return Ok(ApiResponse<string>.Ok(null, "Password reset successflly"));
         }
+
+        [AllowAnonymous]
+        [HttpPost("basic-info")]
+        public async Task<IActionResult> GetUsersBasicInfo(GetUsersBasicInfoRequest request)
+        {
+            var result = await _authService.GetUsersBasicInfoAsync(request.UserIds);
+
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var user = await _authService.GetUserBasicInfoAsync(id);
+
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
+        }
     }
 }

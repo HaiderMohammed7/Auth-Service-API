@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AuthService.Shared.DTOs;
+﻿using AuthService.Shared.DTOs;
 
 namespace AuthService.Application.Interfaces
 {
@@ -17,5 +12,7 @@ namespace AuthService.Application.Interfaces
         void ChangePassword(int userId, ChangePasswordRequestDto dto, string ipAddress);
         void ForgotPassword(ForgotPasswordRequestDto dto);
         void ResetPassword(ResetPasswordRequestDto dto, string ipAddress);
+        Task<List<UserBasicInfoDto>> GetUsersBasicInfoAsync(IEnumerable<int> userIds);
+        Task<UserBasicInfoDto?> GetUserBasicInfoAsync(int userId);
     }
 }

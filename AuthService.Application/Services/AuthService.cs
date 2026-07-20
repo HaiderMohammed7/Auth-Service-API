@@ -3,7 +3,6 @@ using AuthService.Application.Interfaces;
 using AuthService.Domain.Entities;
 using AuthService.Shared.DTOs;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -248,6 +247,34 @@ namespace AuthService.Application.Services
             _refreshTokenService.RevokeAllForUser(user.UserID, ipAddress);
 
             _auditService.Log(user.UserID, "ResetPassword", null, ipAddress);
+        }
+
+        public async Task<List<UserBasicInfoDto>> GetUsersBasicInfoAsync(IEnumerable<int> userIds)
+        {
+            if (userIds == null || !userIds.Any())
+                return new List<UserBasicInfoDto>();
+
+            var users = await _userRepo.GetUsersByIdsAsync(userIds);
+
+            return users.Select(u => new UserBasicInfoDto
+            {
+                UserId = u.UserID,
+                UserName = u.UserName
+            }).ToList();
+        }
+
+        public async Task<UserBasicInfoDto?> GetUserBasicInfoAsync(int userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId);
+
+            if (user == null)
+                return null;
+
+            return new UserBasicInfoDto
+            {
+                UserId = user.UserID,
+                UserName = user.UserName
+            };
         }
     }
 }

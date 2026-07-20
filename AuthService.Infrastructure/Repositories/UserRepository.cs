@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AuthService.Application.Interfaces;
+﻿using AuthService.Application.Interfaces;
 using AuthService.Domain.Entities;
 using AuthService.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Infrastructure.Repositories
 {
@@ -125,6 +121,16 @@ namespace AuthService.Infrastructure.Repositories
 
             resetToken.UsedAt = DateTime.UtcNow;
             _context.SaveChanges();
+        }
+
+        public async Task<List<User>> GetUsersByIdsAsync(IEnumerable<int> userIds)
+        {
+            return await _context.Users.Where(u => userIds.Contains(u.UserID)).ToListAsync();
+        }
+
+        public async Task<User?> GetByIdAsync(int userId)
+        {
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserID == userId);
         }
     }
 }
