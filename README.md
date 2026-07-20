@@ -31,7 +31,7 @@ The project provides a secure and reusable authentication system that can be int
 
 ### Security
 
-* PBKDF2 Password Hashing
+* Argon2 Password Hashing
 * Role-Based Authorization
 * Rate Limiting
 * Brute Force Protection
@@ -39,9 +39,28 @@ The project provides a secure and reusable authentication system that can be int
 * Global Exception Handling
 * Request Logging Middleware
 
+### Monitoring & Logging
+
+- Request Logging Middleware
+- Audit Logging
+- Centralized Logging
+- Request Tracking
+
+### Error Handling
+
+- Global Exception Handling Middleware
+- Standardized API Responses
+- Consistent Error Responses
+
+### API Design
+
+- Standardized API Response Wrapper
+- DTO-based Communication
+- Clean Separation of Concerns
+
 ---
 
-## Architecture
+## Project Structure
 
 The project follows Clean Architecture principles.
 
@@ -116,14 +135,16 @@ Contains DTOs, helper classes, and standardized API responses.
 ---
 
 ## Architecture
-
-![Architecture](images/Architecture.png)
+Project structure following Clean Architecture principles.
+![Architecture](README-Images/Architecture.png)
 
 ---
 
 ## API Overview
-
-![Swagger Overview](images/swagger-overview.png)
+Swagger documentation exposing all available authentication endpoints.
+<p align="center">
+  <img src="README-Images/swagger-overview.png" width="900">
+</p>
 
 ---
 
@@ -131,17 +152,23 @@ Contains DTOs, helper classes, and standardized API responses.
 
 ### Login Request
 
-![Login Request](images/swagger-Login_Request.png)
+<p align="center">
+  <img src="README-Images/swagger-Login_Request.png" width="900">
+</p>
 
 ### Login Response
-
-![Login Response](images/swagger-Login_Response.png)
+Successful login returns both Access Token and Refresh Token.
+<p align="center">
+  <img src="README-Images/swagger-Login_Response.png" width="900">
+</p>
 
 ---
 
 ## Refresh Token Rotation
 
-![Refresh Response](images/swagger-Refresh_Response.png)
+<p align="center">
+  <img src="README-Images/swagger-Refresh_Response.png" width="900">
+</p>
 
 ## Technologies
 
@@ -172,7 +199,7 @@ The authentication flow follows modern security practices:
 
 ### Current Version
 
-v1.2.0
+v1.3.0
 
 ### Completed
 
