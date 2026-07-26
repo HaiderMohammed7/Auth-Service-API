@@ -8,7 +8,7 @@ namespace AuthService.Application.Interfaces
         TokenResponseDto Refresh(string refreshToken, string ipAddress);
         void Logout(string refreshToken, string ipAddress);
         void LogoutAll(int userId, string ipAddress);
-        void Register(RegisterRequestDto dto);
+        int Register(RegisterRequestDto dto);
         void ChangePassword(int userId, ChangePasswordRequestDto dto, string ipAddress);
         void ForgotPassword(ForgotPasswordRequestDto dto);
         void ResetPassword(ResetPasswordRequestDto dto, string ipAddress);

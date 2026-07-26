@@ -88,8 +88,8 @@ namespace AuthService.API.Controllers
         [HttpPost("register")]
         public IActionResult Rigister([FromBody] RegisterRequestDto dto)
         {
-            _authService.Register(dto);
-            return Ok(ApiResponse<string>.Ok(null, "User registered successfully"));
+            var authUserId = _authService.Register(dto);
+            return Ok(ApiResponse<int>.Ok(authUserId, "User registered successfully"));
         }
 
         [HttpPost("change-password")]

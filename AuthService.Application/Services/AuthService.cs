@@ -141,7 +141,7 @@ namespace AuthService.Application.Services
             _auditService.Log(userId, "Logout", null, ipAddress);
         }
 
-        public void Register(RegisterRequestDto dto)
+        public int Register(RegisterRequestDto dto)
         {
             var existingUser = _userRepo.GetByEmailOrUserName(dto.Email, dto.UserName);
 
@@ -172,6 +172,7 @@ namespace AuthService.Application.Services
 
             _userRepo.Add(user);
             _userRepo.AssignRole(user.UserID, "User");
+            return user.UserID;
         }
 
         public void ChangePassword(int userId, ChangePasswordRequestDto dto, string ipAddress)
