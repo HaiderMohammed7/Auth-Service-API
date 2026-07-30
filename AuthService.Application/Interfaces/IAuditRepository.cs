@@ -5,5 +5,6 @@ namespace AuthService.Application.Interfaces
     public interface IAuditRepository
     {
         void Add(AuditLog log);
+        void DeleteAllForUser(int userId);
     }
 }

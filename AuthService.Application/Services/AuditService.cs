@@ -25,5 +25,9 @@ namespace AuthService.Application.Services
 
             _repo.Add(log);
         }
+        public void DeleteAllForUser(int userId)
+        {
+            _repo.DeleteAllForUser(userId);
+        }
     }
 }

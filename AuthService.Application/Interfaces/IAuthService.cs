@@ -14,5 +14,7 @@ namespace AuthService.Application.Interfaces
         void ResetPassword(ResetPasswordRequestDto dto, string ipAddress);
         Task<List<UserBasicInfoDto>> GetUsersBasicInfoAsync(IEnumerable<int> userIds);
         Task<UserBasicInfoDto?> GetUserBasicInfoAsync(int userId);
+        void UpdateUser(int authUserId, UpdateUserRequestDto dto);
+        void DeleteUser(int userId, string ipAddress);
     }
 }

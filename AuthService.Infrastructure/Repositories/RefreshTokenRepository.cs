@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AuthService.Application.Interfaces;
+﻿using AuthService.Application.Interfaces;
 using AuthService.Domain.Entities;
 using AuthService.Infrastructure.Data;
 
@@ -35,5 +30,16 @@ namespace AuthService.Infrastructure.Repositories
         public List<RefreshToken> GetActiveTokensByUser(int userId)
             => _context.RefreshTokens.Where(t => t.UserID == userId
             && t.RevokedAt == null && t.ExpiresAt > DateTime.UtcNow).ToList();
+
+        public void DeleteAllForUser(int userId)
+        {
+            var tokens = _context.RefreshTokens.Where(rt => rt.UserID == userId).ToList();
+
+            if (tokens.Any())
+            {
+                _context.RefreshTokens.RemoveRange(tokens);
+                _context.SaveChanges();
+            }
+        }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AuthService.Domain.Entities;
+﻿using AuthService.Domain.Entities;
 
 namespace AuthService.Application.Interfaces
 {
@@ -13,6 +8,6 @@ namespace AuthService.Application.Interfaces
         RefreshToken? Get(string token);
         void Revoke(string token, string ipAddress);
         void RevokeAllForUser(int userId, string ipAddress);
-
+        void DeleteAllForUser(int userId);
     }
 }

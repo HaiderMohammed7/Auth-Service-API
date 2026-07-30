@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 using AuthService.Application.Interfaces;
 using AuthService.Domain.Entities;
 
@@ -59,6 +54,11 @@ namespace AuthService.Application.Services
             }
 
             _refreshTokenRepository.Save();
+        }
+
+        public void DeleteAllForUser(int userId)
+        {
+            _refreshTokenRepository.DeleteAllForUser(userId);
         }
     }
 }

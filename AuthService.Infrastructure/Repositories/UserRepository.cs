@@ -1,4 +1,5 @@
-﻿using AuthService.Application.Interfaces;
+﻿using AuthService.Application.Exceptions;
+using AuthService.Application.Interfaces;
 using AuthService.Domain.Entities;
 using AuthService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -75,6 +76,18 @@ namespace AuthService.Infrastructure.Repositories
             _context.SaveChanges();
         }
 
+        public void Delete(int userId)
+        {
+            var user = _context.Users.Find(userId);
+
+            if (user == null)
+                throw new AppException("User not found.", 404);
+
+            _context.Users.Remove(user);
+
+            _context.SaveChanges();
+        }
+
         public void AssignRole(int userId, string roleName)
         {
             var role = _context.Roles.Single(r => r.RoleName == roleName);
@@ -96,6 +109,11 @@ namespace AuthService.Infrastructure.Repositories
             user.PasswordSalt = salt;
             user.UpdatedAt = DateTime.UtcNow;
 
+            _context.SaveChanges();
+        }
+
+        public void Save()
+        {
             _context.SaveChanges();
         }
 

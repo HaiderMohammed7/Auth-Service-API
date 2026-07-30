@@ -16,8 +16,10 @@ namespace AuthService.Application.Interfaces
         void UpdateLastLogin(int userID);
         List<string> GetUserRoles(int userID);
         void Add(User user);
+        void Delete(int userId);
         void AssignRole(int userID, string roleName);
         void UpdatePassword(int userId, byte[] hash, byte[] salt);
+        void Save();
 
         void AddResetToken(PasswordResetToken token);
         PasswordResetToken? GetValidResetToken(byte[] tokenHash);

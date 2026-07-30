@@ -18,5 +18,15 @@ namespace AuthService.Infrastructure.Repositories
             _context.AuditLogs.Add(log);
             _context.SaveChanges();
         }
+        public void DeleteAllForUser(int userId)
+        {
+            var logs = _context.AuditLogs.Where(a => a.UserID == userId).ToList();
+
+            if (logs.Any())
+            {
+                _context.AuditLogs.RemoveRange(logs);
+                _context.SaveChanges();
+            }
+        }
     }
 }

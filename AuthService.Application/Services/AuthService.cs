@@ -175,6 +175,40 @@ namespace AuthService.Application.Services
             return user.UserID;
         }
 
+        public void UpdateUser(int authUserId, UpdateUserRequestDto dto)
+        {
+            var user = _userRepo.GetById(authUserId) ?? throw new AppException("User not found", 404);
+
+            var existingUser = _userRepo.GetByEmailOrUserName(dto.Email, dto.UserName);
+
+            if(existingUser != null && existingUser.UserID != authUserId)
+            {
+                if (string.Equals(existingUser.Email, dto.Email, StringComparison.OrdinalIgnoreCase))
+                    throw new AppException("Email already exists", 409);
+
+                if (string.Equals(existingUser.UserName, dto.UserName, StringComparison.OrdinalIgnoreCase))
+                    throw new AppException("Username already exists", 409);
+            }
+            user.UserName = dto.UserName;
+            user.Email = dto.Email;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            _userRepo.Save();
+        }
+
+        public void DeleteUser(int userId, string ipAddress)
+        {
+            var user = _userRepo.GetById(userId) ?? throw new AppException("User not found.", 404);
+
+            _auditService.DeleteAllForUser(userId);
+
+            _refreshTokenService.DeleteAllForUser(userId);
+
+            _userRepo.Delete(userId);
+
+            _logger.LogInformation("User deleted successfully. UserId: {UserId}, IP: {IP}", userId, ipAddress);    
+        }
+
         public void ChangePassword(int userId, ChangePasswordRequestDto dto, string ipAddress)
         {
             var user = _userRepo.GetById(userId)

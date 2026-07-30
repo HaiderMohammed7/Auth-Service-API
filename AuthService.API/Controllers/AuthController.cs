@@ -1,11 +1,12 @@
-﻿using System.Security.Claims;
+﻿using AuthService.Application.Exceptions;
 using AuthService.Application.Interfaces;
 using AuthService.Shared.DTOs;
+using AuthService.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using AuthService.Shared.Responses;
 using Microsoft.AspNetCore.RateLimiting;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace AuthService.API.Controllers
 {
@@ -90,6 +91,29 @@ namespace AuthService.API.Controllers
         {
             var authUserId = _authService.Register(dto);
             return Ok(ApiResponse<int>.Ok(authUserId, "User registered successfully"));
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(int id, [FromBody] UpdateUserRequestDto dto)
+        {
+            _authService.UpdateUser(id, dto);
+
+            return Ok(ApiResponse<string>.Ok(null, "User updated successfully"));
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (currentUserId == id)
+                throw new AppException("You cannot delete your own account.", 400);
+
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+            _authService.DeleteUser(id, ip);
+
+            return Ok(ApiResponse<string>.Ok(null, "User deleted successfully"));
         }
 
         [HttpPost("change-password")]
